@@ -37,6 +37,53 @@ uv pip install -e .
 pip install -e .
 ```
 
+## Usage
+
+### Running the MCP Server
+
+```bash
+# Run server via stdio (MCP standard)
+python -m moku_mcp
+
+# Or with uv
+uv run python -m moku_mcp
+```
+
+### Integration with Claude Desktop
+
+Add to your Claude Desktop config file:
+
+**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+**Linux**: `~/.config/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "moku": {
+      "command": "uv",
+      "args": ["run", "python", "-m", "moku_mcp"],
+      "cwd": "/path/to/moku-mcp"
+    }
+  }
+}
+```
+
+### Using the Session Context Manager
+
+For safe device management with automatic cleanup:
+
+```python
+from moku_mcp.session import MokuSession
+
+async def deploy_config_safely(device_id: str, config: dict):
+    async with MokuSession(device_id) as moku:
+        # Device is automatically connected
+        result = await moku.push_config(config)
+        # Device is automatically released even if error occurs
+        return result
+```
+
 ## MCP Tools
 
 ### 1. discover_mokus()
@@ -112,9 +159,15 @@ List configured instrument slots.
 
 ## Implementation Status
 
-🚧 **Skeleton Only** - See `IMPLEMENTATION_GUIDE.md` for implementation details.
+✅ **Core Implementation Complete**
 
-All tool methods currently raise `NotImplementedError` with references to the implementation guide.
+All 8 MCP tools are fully implemented:
+- Device discovery via zeroconf
+- Connection management with singleton pattern
+- Configuration deployment (CloudCompile & Oscilloscope)
+- Signal routing configuration
+- Device metadata queries
+- Session context manager for safe cleanup
 
 ## Development
 
@@ -140,6 +193,7 @@ ruff check src/
 - `mcp` - Model Context Protocol SDK
 - `pydantic` - Data validation
 - `loguru` - Logging
+- `zeroconf` - Device discovery via mDNS/Bonjour
 
 ## Next Steps
 
