@@ -3,7 +3,7 @@ name = "moku-mcp"
 version = "0.1.0"
 description = "Model Context Protocol (MCP) server for Moku device control"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 authors = [
     { name = "Sealab Team" }
 ]
@@ -24,6 +24,9 @@ dependencies = [
 
     # Logging
     "loguru>=0.7.0",
+
+    # Device Discovery
+    "zeroconf>=0.132.0",
 ]
 
 [project.optional-dependencies]
@@ -38,16 +41,19 @@ dev = [
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.hatch.metadata]
+allow-direct-references = true
+
 [tool.hatchling.build.targets.wheel]
 packages = ["src/moku_mcp"]
 
 [tool.black]
 line-length = 100
-target-version = ["py311"]
+target-version = ["py310"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py310"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
